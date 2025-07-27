@@ -1,0 +1,1246 @@
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nerus OS HTML</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .autocomplete-list {
+            position: absolute;
+            width: calc(100% - 70px);
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: #4B5563;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 60;
+            margin-top: 5px;
+            top: calc(100% + 5px);
+            left: 0;
+        }
+
+        .autocomplete-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            color: #FFFFFF;
+        }
+
+        .autocomplete-item:hover {
+            background-color: #6B7280;
+        }
+
+        #clock {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+        }
+
+        #start-menu {
+            top: 15px;
+            bottom: 68px;
+            left: 0;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-out;
+            z-index: 60;
+        }
+
+        #start-menu.start-menu-active {
+            transform: translateX(0);
+        }
+
+        .sidebar {
+            width: 250px;
+            transition: width 0.3s ease-out;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .sidebar.collapsed {
+            width: 60px;
+        }
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        .sidebar.collapsed .sidebar-item {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-item svg {
+            flex-shrink: 0;
+        }
+        .sidebar-item .sidebar-text {
+            flex-grow: 1;
+            margin-left: 8px;
+        }
+
+        .backdrop-blur-50-percent {
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background: none;
+            border: none;
+            width: 100%;
+            height: 40px;
+            padding: 0;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 0.5rem;
+        }
+
+        input[type="color"]::-moz-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-moz-color-swatch {
+            border: none;
+            border-radius: 0.5rem;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2d3748;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #606f8a;
+        }
+
+        .app-window {
+            position: absolute;
+            background-color: #2d3748;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 300px;
+            min-height: 200px;
+            resize: both;
+            z-index: 50;
+        }
+
+        .window-header {
+            cursor: grab;
+            padding: 0.5rem 1rem;
+            background-color: #1a202c;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .window-button {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+        .window-button.close:hover { background-color: #ef4444; }
+        .window-button.minimize:hover { background-color: #fbbf24; }
+        .window-button.maximize:hover { background-color: #34d399; }
+
+        .window-content {
+            flex-grow: 1;
+            padding: 1rem;
+            background-color: #2d3748;
+            color: white;
+            overflow: auto;
+        }
+
+        .browser-url-bar {
+            padding: 0.5rem;
+            background-color: #4a5568;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .browser-content-area {
+            flex-grow: 1;
+            background-color: #ffffff;
+            color: #1a202c;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .notepad-textarea {
+            width: 100%;
+            height: 100%;
+            background-color: #1a202c;
+            color: white;
+            border: none;
+            padding: 1rem;
+            resize: none;
+            font-family: monospace;
+            font-size: 1rem;
+            outline: none;
+            border-radius: 0.5rem;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .calculator-button {
+            padding: 1rem;
+            background-color: #4a5568;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+        .calculator-button:hover {
+            background-color: #606f8a;
+        }
+        .calculator-button.operator {
+            background-color: #fbbf24;
+        }
+        .calculator-button.operator:hover {
+            background-color: #f59e0b;
+        }
+        .calculator-button.equals {
+            background-color: #34d399;
+        }
+        .calculator-button.equals:hover {
+            background-color: #10b981;
+        }
+        .calculator-button.clear {
+            background-color: #ef4444;
+        }
+        .calculator-button.clear:hover {
+            background-color: #dc2626;
+        }
+        .calculator-display {
+            background-color: #1a202c;
+            color: white;
+            font-size: 2.5rem;
+            text-align: right;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col overflow-hidden" style="background-image: linear-gradient(to bottom right, #191970, #483d8b);">
+
+    <div class="flex-grow flex p-8">
+        <div class="grid grid-cols-6 gap-6 w-full h-full">
+            <div class="flex flex-col items-center justify-start text-white group app-icon">
+                <div id="nerus-browser-clickable-icon" class="w-16 h-16 bg-blue-600 bg-opacity-70 rounded-2xl flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16L2 12l4-4"></path>
+                    </svg>
+                </div>
+                <p class="text-sm mt-2 text-shadow-sm opacity-80 group-hover:opacity-100 transition-opacity duration-200">Nerus Browser</p>
+            </div>
+
+            <div class="flex flex-col items-center justify-start text-white group app-icon">
+                <div id="omg-note-clickable-icon" class="w-16 h-16 bg-purple-600 bg-opacity-70 rounded-2xl flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                </div>
+                <p class="text-sm mt-2 text-shadow-sm opacity-80 group-hover:opacity-100 transition-opacity duration-200">omg note</p>
+            </div>
+
+            <div class="flex flex-col items-center justify-start text-white group app-icon">
+                <div id="nerus-calculator-clickable-icon" class="w-16 h-16 bg-red-600 bg-opacity-70 rounded-2xl flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-3 4v6m-2-2h4m2 0H7m12-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2z"></path>
+                    </svg>
+                </div>
+                <p class="text-sm mt-2 text-shadow-sm opacity-80 group-hover:opacity-100 transition-opacity duration-200">Nerus Calculator</p>
+            </div>
+
+            <div class="flex flex-col items-center justify-start text-white group app-icon">
+                <div id="nerus-paint-tool-clickable-icon" class="w-16 h-16 bg-pink-600 bg-opacity-70 rounded-2xl flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343V4.766a2 2 0 012.535-1.921l2.766.766a2 2 0 011.921 2.535V16.5M18 9l-4 4"></path>
+                    </svg>
+                </div>
+                <p class="text-sm mt-2 text-shadow-sm opacity-80 group-hover:opacity-100 transition-opacity duration-200">Nerus Paint</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full flex justify-center fixed bottom-0 left-0 right-0 z-55">
+        <div class="w-[800px] bg-gray-900 bg-opacity-70 backdrop-blur-50-percent py-1 flex justify-between items-center rounded-2xl shadow-lg px-8 space-x-4" style="margin-bottom: 7px;">
+            <div class="flex items-center space-x-4">
+                <div id="start-button" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white text-xl shadow-md hover:scale-105 transition-transform duration-200 cursor-pointer" title="スタート">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="16" r="14"></circle>
+                    </svg>
+                </div>
+                <div id="file-explorer-clickable-icon-taskbar" class="w-12 h-12 bg-green-600 bg-opacity-70 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer" title="ファイルエクスプローラー">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <div id="center-taskbar-items" class="flex items-center justify-center">
+            </div>
+
+            <div class="text-white text-sm text-right space-y-1">
+                <div id="clock" class="font-bold text-lg">00:45:31</div>
+                <div id="date">2025/07/10</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="start-menu" class="fixed w-1/2 bg-gray-800 bg-opacity-95 backdrop-blur-50-percent rounded-r-2xl shadow-2xl z-60 p-6 text-white flex flex-col">
+        <h2 class="text-3xl font-bold mb-6">スタートメニュー</h2>
+        <div class="space-y-4">
+            <button id="start-menu-file-explorer-button" class="w-full text-left px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors duration-200">
+                ファイルエクスプローラー
+            </button>
+            <button class="w-full text-left px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors duration-200">
+                設定
+            </button>
+            <button class="w-full text-left px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors duration-200">
+                ドキュメント
+            </button>
+            <button class="w-full text-left px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors duration-200">
+                シャットダウン
+            </button>
+        </div>
+        <div class="mt-auto pt-6 border-t border-gray-700">
+            <p class="text-gray-400">Nerus OS Lite Ver. 0.2β</p>
+        </div>
+    </div>
+
+    <script>
+        const appDataStorage = {};
+
+        const nerusInternalUrls = [
+            'nerus://homepage',
+            'nerus://about',
+            'nerus://omgshop',
+            'omgshop.com',
+            'newtube.com',
+            'newtube'
+        ];
+
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('date').textContent = `${year}/${month}/${day}`;
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function detectDeviceType() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            if (/android/i.test(userAgent) || /iphone|ipod/i.test(userAgent)) {
+                return 'smartphone';
+            } else {
+                return 'desktop';
+            }
+        }
+
+        function createHomeButton() {
+            const homeButton = document.createElement('button');
+            homeButton.id = 'home-button';
+            homeButton.className = 'w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-xl shadow-md hover:scale-105 transition-transform duration-200 cursor-pointer';
+            homeButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10" />
+                </svg>
+            `;
+            homeButton.title = "ホーム";
+            homeButton.addEventListener('click', () => {
+                const appWindows = document.querySelectorAll('[id$="-window"]');
+                appWindows.forEach(windowElement => {
+                    closeAppWindowAnimation(windowElement);
+                });
+            });
+            return homeButton;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const deviceType = detectDeviceType();
+            if (deviceType === 'smartphone') {
+                const centerTaskbarItems = document.getElementById('center-taskbar-items');
+                if (centerTaskbarItems) {
+                    centerTaskbarItems.appendChild(createHomeButton());
+                }
+            }
+        });
+
+        let zIndexCounter = 100;
+
+        function createAppWindow(id, title, contentHTML, initialWidth = 800, initialHeight = 600) {
+            const existingWindow = document.getElementById(id);
+            if (existingWindow) {
+                bringWindowToFront(existingWindow);
+                return existingWindow;
+            }
+
+            const windowElement = document.createElement('div');
+            windowElement.id = id;
+            windowElement.className = 'app-window fixed bg-gray-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fade-in';
+            windowElement.style.width = `${initialWidth}px`;
+            windowElement.style.height = `${initialHeight}px`;
+            windowElement.style.top = `${Math.random() * (window.innerHeight - initialHeight - 100) + 50}px`;
+            windowElement.style.left = `${Math.random() * (window.innerWidth - initialWidth - 100) + 50}px`;
+
+            bringWindowToFront(windowElement);
+
+            windowElement.innerHTML = `
+                <div class="window-header flex justify-between items-center py-2 px-4 bg-gray-900 text-white rounded-t-2xl cursor-grab">
+                    <span class="window-title text-lg font-bold">${title}</span>
+                    <div class="flex space-x-2">
+                        <div class="window-button minimize bg-yellow-400" title="最小化"></div>
+                        <div class="window-button maximize bg-green-400" title="最大化"></div>
+                        <div class="window-button close bg-red-500" title="閉じる"></div>
+                    </div>
+                </div>
+                <div class="window-content flex-grow p-4 bg-gray-800 text-white overflow-auto">
+                    ${contentHTML}
+                </div>
+            `;
+
+            document.body.appendChild(windowElement);
+
+            const closeButton = windowElement.querySelector('.window-button.close');
+            if (closeButton) {
+                closeButton.addEventListener('click', () => {
+                    closeAppWindowAnimation(windowElement);
+                });
+            }
+
+            const minimizeButton = windowElement.querySelector('.window-button.minimize');
+            if (minimizeButton) {
+                minimizeButton.addEventListener('click', () => {
+                    windowElement.style.display = 'none';
+                });
+            }
+
+            const maximizeButton = windowElement.querySelector('.window-button.maximize');
+            if (maximizeButton) {
+                let isMaximized = false;
+                let originalPosition = { top: windowElement.style.top, left: windowElement.style.left, width: windowElement.style.width, height: windowElement.style.height };
+
+                maximizeButton.addEventListener('click', () => {
+                    if (!isMaximized) {
+                        originalPosition = {
+                            top: windowElement.style.top,
+                            left: windowElement.style.left,
+                            width: windowElement.style.width,
+                            height: windowElement.style.height
+                        };
+
+                        windowElement.style.top = '0px';
+                        windowElement.style.left = '0px';
+                        windowElement.style.width = '100vw';
+                        windowElement.style.height = 'calc(100vh - 60px)';
+                        windowElement.style.borderRadius = '0';
+                        windowElement.style.resize = 'none';
+                        isMaximized = true;
+                    } else {
+                        windowElement.style.top = originalPosition.top;
+                        windowElement.style.left = originalPosition.left;
+                        windowElement.style.width = originalPosition.width;
+                        windowElement.style.height = originalPosition.height;
+                        windowElement.style.borderRadius = '1rem';
+                        windowElement.style.resize = 'both';
+                        isMaximized = false;
+                    }
+                });
+            }
+
+            makeWindowDraggable(windowElement);
+            makeWindowResizable(windowElement);
+
+            windowElement.addEventListener('mousedown', () => {
+                bringWindowToFront(windowElement);
+            });
+
+            return windowElement;
+        }
+
+        function closeAppWindowAnimation(windowElement) {
+            windowElement.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+            windowElement.style.opacity = '0';
+            windowElement.style.transform = 'scale(0.9)';
+            windowElement.addEventListener('transitionend', () => {
+                windowElement.remove();
+            }, { once: true });
+        }
+
+        function bringWindowToFront(windowElement) {
+            zIndexCounter++;
+            windowElement.style.zIndex = zIndexCounter;
+        }
+
+        function makeWindowDraggable(windowElement) {
+            const header = windowElement.querySelector('.window-header');
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            header.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                offsetX = e.clientX - windowElement.getBoundingClientRect().left;
+                offsetY = e.clientY - windowElement.getBoundingClientRect().top;
+                header.style.cursor = 'grabbing';
+                bringWindowToFront(windowElement);
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                windowElement.style.left = `${e.clientX - offsetX}px`;
+                windowElement.style.top = `${e.clientY - offsetY}px`;
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                header.style.cursor = 'grab';
+            });
+
+            header.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                const touch = e.touches[0];
+                offsetX = touch.clientX - windowElement.getBoundingClientRect().left;
+                offsetY = touch.clientY - windowElement.getBoundingClientRect().top;
+                header.style.cursor = 'grabbing';
+                bringWindowToFront(windowElement);
+                e.preventDefault();
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const touch = e.touches[0];
+                windowElement.style.left = `${touch.clientX - offsetX}px`;
+                windowElement.style.top = `${touch.clientY - offsetY}px`;
+                e.preventDefault();
+            });
+
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+                header.style.cursor = 'grab';
+            });
+        }
+
+        function makeWindowResizable(windowElement) {
+        }
+
+        const browserContent = `
+            <div class="flex flex-col h-full w-full">
+                <div class="browser-url-bar flex items-center mb-2">
+                    <input type="text" id="browser-url-input" placeholder="URLを入力するか、検索..." class="flex-grow p-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <button id="browser-go-button" class="ml-2 px-4 py-2 bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700 transition-colors duration-200">Go</button>
+                    <div id="autocomplete-list" class="autocomplete-list hidden"></div>
+                </div>
+                <div id="browser-content-area" class="browser-content-area flex-grow flex items-center justify-center rounded-lg text-gray-400">
+                    Nerus OSへようこそ！
+                </div>
+            </div>
+        `;
+
+        function updateBrowserContent(contentArea, url) {
+            let displayUrl = url;
+            let content = '';
+
+            if (url.startsWith('nerus://')) {
+                const internalPath = url.substring('nerus://'.length);
+                switch (internalPath) {
+                    case 'homepage':
+                        content = '<h1>Nerus OS ホームページ</h1><p>Nerus OSへようこそ！</p>';
+                        break;
+                    case 'about':
+                        content = '<h1>Nerus OSについて</h1><p>バージョン 0.2β</p><p>開発者: Google Gemini</p>';
+                        break;
+                    case 'omgshop':
+                        content = '<h1>omg shop</h1><p>素晴らしい商品が揃っています！</p><p>現在メンテナンス中です。</p>';
+                        break;
+                    default:
+                        content = `<h1>エラー: ページが見つかりません</h1><p>内部URL '${url}' は存在しません。</p>`;
+                }
+            } else if (url === 'omgshop.com') {
+                content = `
+                    <div class="p-4">
+                        <h1 class="text-3xl font-bold mb-4 text-gray-800">omgshop.com</h1>
+                        <p class="text-gray-700 mb-2">オンラインショッピングをお楽しみください！</p>
+                        <p class="text-gray-600">現在、サイトはメンテナンス中です。ご不便をおかけして申し訳ありません。</p>
+                        <img src="https://placehold.co/400x200/FF5733/FFFFFF?text=omgshop.com" alt="omgshop.com placeholder" class="mt-4 rounded-lg shadow-md">
+                    </div>
+                `;
+            } else if (url === 'newtube.com' || url === 'newtube') {
+                content = `
+                    <div class="p-4">
+                        <h1 class="text-3xl font-bold mb-4 text-gray-800">NewTube.com</h1>
+                        <p class="text-gray-700 mb-2">最新の動画コンテンツをお楽しみください！</p>
+                        <p class="text-gray-600">現在、動画の読み込みに問題が発生しています。しばらくお待ちください。</p>
+                        <img src="https://placehold.co/400x200/3366FF/FFFFFF?text=NewTube.com" alt="NewTube.com placeholder" class="mt-4 rounded-lg shadow-md">
+                    </div>
+                `;
+            }
+            else {
+                content = `
+                    <div class="p-4">
+                        <h1 class="text-3xl font-bold mb-4 text-gray-800">外部サイト</h1>
+                        <p class="text-gray-700 mb-2">このブラウザは外部サイトの表示をシミュレートしています。</p>
+                        <p class="text-gray-600">URL: ${url}</p>
+                        <img src="https://placehold.co/400x200/333333/FFFFFF?text=${encodeURIComponent(url)}" alt="Placeholder for ${url}" class="mt-4 rounded-lg shadow-md">
+                    </div>
+                `;
+            }
+            contentArea.innerHTML = content;
+        }
+
+        document.getElementById('nerus-browser-clickable-icon').addEventListener('click', () => {
+            const browserWindow = createAppWindow('nerus-browser-window', 'Nerus Browser', browserContent, 900, 600);
+            const urlInput = browserWindow.querySelector('#browser-url-input');
+            const goButton = browserWindow.querySelector('#browser-go-button');
+            const contentArea = browserWindow.querySelector('#browser-content-area');
+            const autocompleteList = browserWindow.querySelector('#autocomplete-list');
+
+            updateBrowserContent(contentArea, 'nerus://homepage');
+            urlInput.value = 'nerus://homepage';
+
+            goButton.addEventListener('click', () => {
+                const url = urlInput.value.trim();
+                if (url) {
+                    updateBrowserContent(contentArea, url);
+                    autocompleteList.classList.add('hidden');
+                }
+            });
+
+            urlInput.addEventListener('input', () => {
+                const query = urlInput.value.toLowerCase();
+                autocompleteList.innerHTML = '';
+                if (query.length > 0) {
+                    const filteredUrls = nerusInternalUrls.filter(url => url.toLowerCase().includes(query));
+                    if (filteredUrls.length > 0) {
+                        filteredUrls.forEach(url => {
+                            const item = document.createElement('div');
+                            item.className = 'autocomplete-item';
+                            item.textContent = url;
+                            item.addEventListener('click', () => {
+                                urlInput.value = url;
+                                updateBrowserContent(contentArea, url);
+                                autocompleteList.classList.add('hidden');
+                            });
+                            autocompleteList.appendChild(item);
+                        });
+                        autocompleteList.classList.remove('hidden');
+                    } else {
+                        autocompleteList.classList.add('hidden');
+                    }
+                } else {
+                    autocompleteList.classList.add('hidden');
+                }
+            });
+
+            urlInput.addEventListener('blur', () => {
+                setTimeout(() => {
+                    autocompleteList.classList.add('hidden');
+                }, 100);
+            });
+
+            urlInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    goButton.click();
+                }
+            });
+        });
+
+        const omgNoteContent = `
+            <div class="flex flex-col h-full w-full">
+                <textarea id="notepad-textarea" class="notepad-textarea flex-grow p-4 bg-gray-900 text-white rounded-lg" placeholder="ここにメモを入力してください..."></textarea>
+            </div>
+        `;
+
+        document.getElementById('omg-note-clickable-icon').addEventListener('click', () => {
+            const noteWindow = createAppWindow('omg-note-window', 'omg note', omgNoteContent, 600, 400);
+            const textarea = noteWindow.querySelector('#notepad-textarea');
+
+            if (appDataStorage['omg-note-content']) {
+                textarea.value = appDataStorage['omg-note-content'];
+            }
+
+            textarea.addEventListener('input', () => {
+                appDataStorage['omg-note-content'] = textarea.value;
+            });
+        });
+
+        const calculatorContent = `
+            <div class="flex flex-col items-center p-4 w-full h-full">
+                <div id="calculator-display" class="calculator-display w-full mb-4 rounded-lg shadow-md">0</div>
+                <div class="calculator-grid w-full">
+                    <button class="calculator-button clear col-span-2">C</button>
+                    <button class="calculator-button operator">&larr;</button>
+                    <button class="calculator-button operator">/</button>
+                    <button class="calculator-button">7</button>
+                    <button class="calculator-button">8</button>
+                    <button class="calculator-button">9</button>
+                    <button class="calculator-button operator">*</button>
+                    <button class="calculator-button">4</button>
+                    <button class="calculator-button">5</button>
+                    <button class="calculator-button">6</button>
+                    <button class="calculator-button operator">-</button>
+                    <button class="calculator-button">1</button>
+                    <button class="calculator-button">2</button>
+                    <button class="calculator-button">3</button>
+                    <button class="calculator-button operator">+</button>
+                    <button class="calculator-button col-span-2">0</button>
+                    <button class="calculator-button">.</button>
+                    <button class="calculator-button equals">=</button>
+                </div>
+            </div>
+        `;
+
+        function initializeCalculator(calculatorWindowElement) {
+            const display = calculatorWindowElement.querySelector('#calculator-display');
+            const buttons = calculatorWindowElement.querySelectorAll('.calculator-button');
+
+            let currentInput = '0';
+            let operator = null;
+            let firstOperand = null;
+            let waitingForSecondOperand = false;
+
+            function updateDisplay() {
+                display.textContent = currentInput;
+            }
+
+            function inputDigit(number) {
+                if (waitingForSecondOperand) {
+                    currentInput = number;
+                    waitingForSecondOperand = false;
+                } else {
+                    currentInput = currentInput === '0' ? number : currentInput + number;
+                }
+                updateDisplay();
+            }
+
+            function inputDecimal() {
+                if (!currentInput.includes('.')) {
+                    currentInput += '.';
+                }
+                updateDisplay();
+            }
+
+            function handleOperator(nextOperator) {
+                const inputValue = parseFloat(currentInput);
+
+                if (operator && waitingForSecondOperand) {
+                    operator = nextOperator;
+                    return;
+                }
+
+                if (firstOperand === null) {
+                    firstOperand = inputValue;
+                } else if (operator) {
+                    const result = performCalculation[operator](firstOperand, inputValue);
+                    currentInput = String(result);
+                    firstOperand = result;
+                }
+
+                waitingForSecondOperand = true;
+                operator = nextOperator;
+                updateDisplay();
+            }
+
+            const performCalculation = {
+                '/': (first, second) => first / second,
+                '*': (first, second) => first * second,
+                '+': (first, second) => first + second,
+                '-': (first, second) => first - second,
+            };
+
+            function resetCalculator() {
+                currentInput = '0';
+                operator = null;
+                firstOperand = null;
+                waitingForSecondOperand = false;
+                updateDisplay();
+            }
+
+            function backspace() {
+                if (currentInput.length > 1) {
+                    currentInput = currentInput.slice(0, -1);
+                } else {
+                    currentInput = '0';
+                }
+                updateDisplay();
+            }
+
+            buttons.forEach(button => {
+                button.addEventListener('click', event => {
+                    const { textContent } = event.target;
+
+                    if (event.target.classList.contains('operator')) {
+                        if (textContent === '&larr;') {
+                            backspace();
+                        } else {
+                            handleOperator(textContent);
+                        }
+                        return;
+                    }
+
+                    if (event.target.classList.contains('equals')) {
+                        handleOperator(operator);
+                        operator = null;
+                        return;
+                    }
+
+                    if (event.target.classList.contains('clear')) {
+                        resetCalculator();
+                        return;
+                    }
+
+                    if (textContent === '.') {
+                        inputDecimal();
+                        return;
+                    }
+
+                    inputDigit(textContent);
+                });
+            });
+
+            updateDisplay();
+        }
+
+        document.getElementById('nerus-calculator-clickable-icon').addEventListener('click', () => {
+            const calculatorWindow = createAppWindow('nerus-calculator-window', 'Nerus Calculator', calculatorContent, 350, 500);
+            initializeCalculator(calculatorWindow.querySelector('.window-content'));
+        });
+
+        const paintToolContent = `
+            <div class="flex flex-col items-center p-4 w-full h-full">
+                <h1 class="text-3xl font-bold text-white mb-6">Nerus ペイントツール</h1>
+
+                <div class="flex flex-col md:flex-row items-center md:items-start w-full space-y-4 md:space-y-0 md:space-x-6 flex-grow">
+                    <div class="flex flex-col p-4 bg-gray-700 rounded-2xl shadow-lg md:w-1/4 w-full space-y-4">
+                        <h2 class="text-xl font-semibold text-white mb-2">ツール</h2>
+
+                        <div>
+                            <label for="colorPicker" class="block text-gray-300 text-sm font-medium mb-2">ブラシの色:</label>
+                            <input type="color" id="colorPicker" value="#000000" class="w-full h-10 rounded-lg shadow-md hover:scale-105 transition-transform duration-200 cursor-pointer mb-2">
+                            
+                            <div class="grid grid-cols-2 gap-2">
+                                <button class="color-button w-full h-10 rounded-lg shadow-md hover:scale-105 transition-transform duration-200 flex items-center justify-center text-sm font-bold text-gray-800" style="background-color: #FFFFFF; border: 2px solid #ccc;" data-color="#FFFFFF" title="消しゴム">消しゴム</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="brushSize" class="block text-gray-300 text-sm font-medium mb-2">ブラシサイズ:</label>
+                            <input type="range" id="brushSize" min="1" max="50" value="5" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                            <span id="brushSizeValue" class="text-gray-400 text-sm mt-1 block text-center">5</span>
+                        </div>
+
+                        <button id="clearButton" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl shadow-md transition-colors duration-200">
+                            クリア
+                        </button>
+                    </div>
+
+                    <div class="relative flex-grow bg-white rounded-2xl shadow-xl overflow-hidden aspect-video w-full md:w-3/4">
+                        <canvas id="paintCanvas" class="w-full h-full"></canvas>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        function initializePaintTool(paintWindowElement) {
+            const canvas = paintWindowElement.querySelector('#paintCanvas');
+            const ctx = canvas.getContext('2d');
+            const colorPicker = paintWindowElement.querySelector('#colorPicker');
+            const brushSizeSlider = paintWindowElement.querySelector('#brushSize');
+            const brushSizeValueSpan = paintWindowElement.querySelector('#brushSizeValue');
+            const clearButton = paintWindowElement.querySelector('#clearButton');
+            const eraserButton = paintWindowElement.querySelector('.color-button[data-color="#FFFFFF"]');
+
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            let brushColor = '#000000';
+            let brushSize = 5;
+
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+                ctx.scale(1, 1);
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.lineWidth = brushSize;
+                ctx.strokeStyle = brushColor;
+            }
+
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = brushSize;
+            ctx.strokeStyle = brushColor;
+            resizeCanvas();
+
+            const observer = new ResizeObserver(() => {
+                resizeCanvas();
+            });
+            observer.observe(canvas.parentElement);
+
+            function getCoordinates(e) {
+                const rect = canvas.getBoundingClientRect();
+                let clientX, clientY;
+
+                if (e.touches && e.touches.length > 0) {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+
+                return [
+                    clientX - rect.left,
+                    clientY - rect.top
+                ];
+            }
+
+            function startDrawing(e) {
+                isDrawing = true;
+                [lastX, lastY] = getCoordinates(e);
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                e.preventDefault();
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+
+                e.preventDefault();
+
+                const [currentX, currentY] = getCoordinates(e);
+
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+                [lastX, lastY] = [currentX, currentY];
+            }
+
+            function stopDrawing() {
+                isDrawing = false;
+                ctx.closePath();
+            }
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            canvas.addEventListener('touchstart', startDrawing);
+            canvas.addEventListener('touchmove', draw);
+            canvas.addEventListener('touchend', stopDrawing);
+            canvas.addEventListener('touchcancel', stopDrawing);
+
+            colorPicker.addEventListener('input', (e) => {
+                brushColor = e.target.value;
+                ctx.strokeStyle = brushColor;
+            });
+
+            eraserButton.addEventListener('click', () => {
+                brushColor = '#FFFFFF';
+                ctx.strokeStyle = brushColor;
+                colorPicker.value = '#FFFFFF';
+            });
+
+            brushSizeSlider.addEventListener('input', (e) => {
+                brushSize = parseInt(e.target.value, 10);
+                brushSizeValueSpan.textContent = brushSize;
+                ctx.lineWidth = brushSize;
+            });
+
+            clearButton.addEventListener('click', () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+        }
+
+        document.getElementById('nerus-paint-tool-clickable-icon').addEventListener('click', () => {
+            const paintWindow = createAppWindow('nerus-paint-tool-window', 'Nerus Paint', paintToolContent, 1000, 700);
+            initializePaintTool(paintWindow.querySelector('.window-content'));
+        });
+
+        const startButton = document.getElementById('start-button');
+        const startMenu = document.getElementById('start-menu');
+        const startMenuFileExplorerButton = document.getElementById('start-menu-file-explorer-button');
+
+        startButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            startMenu.classList.toggle('start-menu-active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!startMenu.contains(e.target) && !startButton.contains(e.target)) {
+                startMenu.classList.remove('start-menu-active');
+            }
+        });
+
+        startMenuFileExplorerButton.addEventListener('click', () => {
+            createAppWindow('file-explorer-window', 'ファイルエクスプローラー', fileExplorerContent, 900, 600);
+            startMenu.classList.remove('start-menu-active');
+        });
+
+        const fileExplorerContent = `
+            <div class="flex h-full w-full bg-gray-800 rounded-lg overflow-hidden">
+                <div id="file-explorer-sidebar" class="sidebar bg-gray-900 text-white p-4 flex flex-col rounded-l-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold sidebar-text">ナビゲーション</h2>
+                        <button id="toggle-sidebar-button" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex flex-col space-y-2 flex-grow">
+                        <div class="sidebar-item cursor-pointer hover:bg-gray-700 rounded-lg transition-colors duration-200" data-path="/home">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"></path>
+                            </svg>
+                            <span class="sidebar-text ml-2">ホーム</span>
+                        </div>
+                        <div class="sidebar-item cursor-pointer hover:bg-gray-700 rounded-lg transition-colors duration-200" data-path="/documents">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <span class="sidebar-text ml-2">ドキュメント</span>
+                        </div>
+                        <div class="sidebar-item cursor-pointer hover:bg-gray-700 rounded-lg transition-colors duration-200" data-path="/downloads">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            <span class="sidebar-text ml-2">ダウンロード</span>
+                        </div>
+                        <div class="sidebar-item cursor-pointer hover:bg-gray-700 rounded-lg transition-colors duration-200" data-path="/pictures">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <span class="sidebar-text ml-2">ピクチャ</span>
+                        </div>
+                        <div class="sidebar-item cursor-pointer hover:bg-gray-700 rounded-lg transition-colors duration-200" data-path="/music">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c-1.105 0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2zm0 0H7m0 0H5m12 0c-1.105 0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2zm0 0H15"></path>
+                            </svg>
+                            <span class="sidebar-text ml-2">ミュージック</span>
+                        </div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-gray-700">
+                        <p class="text-gray-400 text-sm sidebar-text">ストレージ: 20GB / 100GB</p>
+                    </div>
+                </div>
+
+                <div class="flex-grow flex flex-col bg-gray-700 rounded-r-lg">
+                    <div class="p-4 bg-gray-900 text-white flex items-center shadow-md rounded-tr-lg">
+                        <span id="current-path" class="text-lg font-semibold">/home</span>
+                    </div>
+                    <div id="file-list" class="flex-grow p-4 overflow-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 content-start">
+                    </div>
+                </div>
+            </div>
+        `;
+
+        function initializeFileExplorer(fileExplorerWindowElement) {
+            const sidebar = fileExplorerWindowElement.querySelector('#file-explorer-sidebar');
+            const toggleSidebarButton = fileExplorerWindowElement.querySelector('#toggle-sidebar-button');
+            const currentPathSpan = fileExplorerWindowElement.querySelector('#current-path');
+            const fileListContainer = fileExplorerWindowElement.querySelector('#file-list');
+            const sidebarItems = fileExplorerWindowElement.querySelectorAll('.sidebar-item');
+
+            const fileSystem = {
+                '/home': {
+                    'Documents': { type: 'folder' },
+                    'Downloads': { type: 'folder' },
+                    'Pictures': { type: 'folder' },
+                    'Music': { type: 'folder' },
+                    'README.txt': { type: 'file', content: 'これは重要なファイルです。' },
+                    'MyProject': {
+                        type: 'folder',
+                        'index.html': { type: 'file', content: '<html><body><h1>Hello!</h1></body></html>' },
+                        'style.css': { type: 'file', content: 'body { color: blue; }' }
+                    }
+                },
+                '/documents': {
+                    'Report.docx': { type: 'file', content: '年次報告書です。' },
+                    'MeetingNotes.txt': { type: 'file', content: '会議の議事録です。' }
+                },
+                '/downloads': {
+                    'installer.exe': { type: 'file', content: 'インストーラーファイルです。' },
+                    'image.jpg': { type: 'file', content: 'ダウンロードした画像です。' }
+                },
+                '/pictures': {
+                    'vacation.png': { type: 'file', content: '休暇の写真です。' },
+                    'selfie.jpg': { type: 'file', content: '自撮り写真です。' }
+                },
+                '/music': {
+                    'song1.mp3': { type: 'file', content: 'お気に入りの曲1です。' },
+                    'song2.wav': { type: 'file', content: 'お気に入りの曲2です。' }
+                }
+            };
+
+            let currentPath = '/home';
+
+            function renderFileList(path) {
+                fileListContainer.innerHTML = '';
+                currentPathSpan.textContent = path;
+
+                const currentDirectory = getDirectoryContent(path);
+
+                if (path !== '/') {
+                    const upFolderElement = createFileItem('..', 'folder');
+                    upFolderElement.addEventListener('click', () => {
+                        const parentPath = path.substring(0, path.lastIndexOf('/')) || '/';
+                        changeDirectory(parentPath);
+                    });
+                    fileListContainer.appendChild(upFolderElement);
+                }
+
+                for (const name in currentDirectory) {
+                    if (currentDirectory.hasOwnProperty(name)) {
+                        const item = currentDirectory[name];
+                        const itemElement = createFileItem(name, item.type);
+                        itemElement.addEventListener('click', () => {
+                            if (item.type === 'folder') {
+                                changeDirectory(`${path === '/' ? '' : path}/${name}`);
+                            } else {
+                                alert(`ファイルを開く: ${name}\n内容: ${item.content || 'バイナリファイルまたは空ファイル'}`);
+                            }
+                        });
+                        fileListContainer.appendChild(itemElement);
+                    }
+                }
+            }
+
+            function getDirectoryContent(path) {
+                let current = fileSystem;
+                const parts = path.split('/').filter(p => p !== '');
+                for (const part of parts) {
+                    if (current[part] && current[part].type === 'folder') {
+                        current = current[part];
+                    } else {
+                        return {};
+                    }
+                }
+                return current;
+            }
+
+            function createFileItem(name, type) {
+                const div = document.createElement('div');
+                div.className = 'flex flex-col items-center p-2 rounded-lg hover:bg-gray-600 transition-colors duration-200 cursor-pointer';
+                let iconSvg = '';
+                if (type === 'folder') {
+                    iconSvg = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                        </svg>
+                    `;
+                } else {
+                    iconSvg = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0011.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    `;
+                }
+                div.innerHTML = `
+                    ${iconSvg}
+                    <span class="text-sm text-white mt-1 text-center break-all">${name}</span>
+                `;
+                return div;
+            }
+
+            function changeDirectory(newPath) {
+                currentPath = newPath;
+                renderFileList(currentPath);
+            }
+
+            toggleSidebarButton.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+            });
+
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const path = item.dataset.path;
+                    if (path) {
+                        changeDirectory(path);
+                    }
+                });
+            });
+
+            renderFileList(currentPath);
+        }
+
+        document.getElementById('file-explorer-clickable-icon-taskbar').addEventListener('click', () => {
+            const fileExplorerWindow = createAppWindow('file-explorer-window', 'ファイルエクスプローラー', fileExplorerContent, 900, 600);
+            initializeFileExplorer(fileExplorerWindow.querySelector('.window-content'));
+        });
+
+    </script>
+</body>
+</html>
