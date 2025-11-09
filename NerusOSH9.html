@@ -303,35 +303,35 @@
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen">
 
     <!-- デスクトップアイコンコンテナ -->
-    <div class="fixed top-0 left-0 p-4 z-10 space-y-4">
+    <div class="fixed top-0 left-0 p-5 z-10 space-y-5">
         <!-- Nerus Browser -->
-        <div id="nerus-browser" class="app-icon w-20 h-20 flex flex-col items-center justify-center text-center rounded-lg cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('nerus-browser')">
-            <div class="w-10 h-10 mb-1 text-3xl flex items-center justify-center">🌐</div>
-            <p class="text-xs font-semibold">Nerus Browser</p>
+        <div id="nerus-browser" class="app-icon w-22 h-22 flex flex-col items-center justify-center text-center rounded-lg cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('nerus-browser')">
+            <div class="w-11 h-11 mb-1.5 text-4xl flex items-center justify-center">🌐</div>
+            <p class="text-sm font-semibold">Nerus Browser</p>
         </div>
 
         <!-- Desktop Note -->
-        <div id="desktop-note" class="app-icon w-20 h-20 flex flex-col items-center justify-center text-center rounded-lg cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('desktop-note')">
-            <div class="w-10 h-10 mb-1 text-3xl flex items-center justify-center">📝</div>
-            <p class="text-xs font-semibold">omg note</p>
+        <div id="desktop-note" class="app-icon w-22 h-22 flex flex-col items-center justify-center text-center rounded-lg cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('desktop-note')">
+            <div class="w-11 h-11 mb-1.5 text-4xl flex items-center justify-center">📝</div>
+            <p class="text-sm font-semibold">omg note</p>
         </div>
 
         <!-- Nerus Calculator -->
-        <div id="nerus-calculator" class="app-icon w-20 h-20 flex flex-col items-center justify-center text-center rounded-lg cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('nerus-calculator')">
-            <div class="w-10 h-10 mb-1 text-3xl flex items-center justify-center">🧮</div>
-            <p class="text-xs font-semibold">Nerus Calculator</p>
+        <div id="nerus-calculator" class="app-icon w-22 h-22 flex flex-col items-center justify-center text-center rounded-lg cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('nerus-calculator')">
+            <div class="w-11 h-11 mb-1.5 text-4xl flex items-center justify-center">🧮</div>
+            <p class="text-sm font-semibold">Nerus Calculator</p>
         </div>
 
         <!-- Nerus Paint Tool -->
-        <div id="nerus-paint-tool" class="app-icon w-20 h-20 flex flex-col items-center justify-center text-center rounded-lg cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('nerus-paint-tool')">
-            <div class="w-10 h-10 mb-1 text-3xl flex items-center justify-center">🖌️</div>
-            <p class="text-xs font-semibold">Nerus Paint Tool</p>
+        <div id="nerus-paint-tool" class="app-icon w-22 h-22 flex flex-col items-center justify-center text-center rounded-lg cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('nerus-paint-tool')">
+            <div class="w-11 h-11 mb-1.5 text-4xl flex items-center justify-center">🖌️</div>
+            <p class="text-sm font-semibold">Nerus Paint Tool</p>
         </div>
 
         <!-- File Explorer -->
-        <div id="file-explorer" class="app-icon w-20 h-20 flex flex-col items-center justify-center text-center rounded-lg cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('file-explorer')">
-            <div class="w-10 h-10 mb-1 text-3xl flex items-center justify-center">📁</div>
-            <p class="text-xs font-semibold">File Explorer</p>
+        <div id="file-explorer" class="app-icon w-22 h-22 flex flex-col items-center justify-center text-center rounded-lg cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('file-explorer')">
+            <div class="w-11 h-11 mb-1.5 text-4xl flex items-center justify-center">📁</div>
+            <p class="text-sm font-semibold">File Explorer</p>
         </div>
     </div>
 
@@ -392,32 +392,32 @@
         <div class="mb-4">
             <h3 class="text-gray-300 text-sm font-medium mb-3">すべてのアプリ</h3>
             <div class="grid grid-cols-4 gap-3 overflow-y-auto" style="max-height: 400px;">
-                <!-- アプリ1 -->
-                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer">
+                <!-- アプリ1 - Nerus Browser -->
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('nerus-browser')">
                     <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">🌐</div>
                     <span class="text-xs text-white">Nerus Browser</span>
                 </div>
-                <!-- アプリ2 -->
-                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer">
+                <!-- アプリ2 - omg note -->
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('omg-note')">
                     <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">📝</div>
                     <span class="text-xs text-white">omg note</span>
                 </div>
-                <!-- アプリ3 -->
-                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer">
+                <!-- アプリ3 - File Explorer -->
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('file-explorer')">
                     <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">📁</div>
                     <span class="text-xs text-white">File Explorer</span>
                 </div>
-                <!-- アプリ4 -->
-                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer">
+                <!-- アプリ4 - Paint Tool -->
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('nerus-paint-tool')">
                     <div class="w-10 h-10 bg-yellow-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">🎨</div>
                     <span class="text-xs text-white">Paint Tool</span>
                 </div>
-                <!-- アプリ5 -->
-                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer">
+                <!-- アプリ5 - Calculator -->
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('nerus-calculator')">
                     <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">📊</div>
                     <span class="text-xs text-white">Calculator</span>
                 </div>
-                <!-- アプリ6 -->
+                <!-- アプリ6 - 設定 -->
                 <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('settings')">
                     <div class="w-10 h-10 bg-gray-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">⚙️</div>
                     <span class="text-xs text-white">設定</span>
@@ -916,13 +916,13 @@
                         urlInput.value = targetUrl;
                     } else if (targetUrl === 'nerus://about') {
                         contentToShow = `
-                            <h2 class="text-2xl font-bold mb-4">Nerus OS Liteについて</h2>
-                            <p>Nerus OS Liteは、のらうきとGeminiの共同作業によって開発された実験的なOSインターフェースです。</p>
+                            <h2 class="text-2xl font-bold mb-4">Nerus OS H9について</h2>
+                            <p>Nerus OS H9はのらうきといろんなAIの協力で作られました。</p>
                             <p class="mt-2 text-gray-400">
                                 主にはHTML、CSS (Tailwind CSS)、JavaScriptで構成されており、ブラウザ内で動作します。<br>
-                                未来のインターフェースの可能性を探るために作られました。
+                                ぶっちゃけAIが9割作ってる
                             </p>
-                            <p class="mt-4 text-sm text-gray-500">バージョン: 0.2β</p>
+                            <p class="mt-4 text-sm text-gray-500">Nerus Version:HTML9.0</p>
                         `;
                         urlInput.value = targetUrl;
                     } else if (targetUrl === 'nerus://omgshop' || cleanUrl === 'omgshop.com') {
@@ -934,9 +934,8 @@
                             <div class="mt-6 p-4 bg-gray-700 rounded-lg shadow-md">
                                 <p class="text-xl font-semibold text-green-400">商品例: 不思議な石</p>
                                 <p class="text-gray-300 mt-2">購入できません。</p>
-                                <p class="text-right text-lg font-bold mt-4">価格: 1,000,000 NeruCoin</p>
+                                <p class="text-right text-lg font-bold mt-4">価格: 1,000,000 円</p>
                             </div>
-                            <p class="mt-4 text-gray-400">（これはNerus Browser内のシミュレーションです）</p>
                         `;
                     } else if (targetUrl === 'nerus://newtube' || cleanUrl === 'newtube.com') {
                         urlInput.value = 'newtube.com';
@@ -1024,6 +1023,15 @@
                 const updateNavigationButtons = () => {
                     backBtn.disabled = currentHistoryIndex <= 0;
                 };
+
+                // 戻るボタンのイベントリスナーを追加
+                backBtn.addEventListener('click', () => {
+                    if (currentHistoryIndex > 0) {
+                        currentHistoryIndex--;
+                        const previousUrl = browserHistory[currentHistoryIndex];
+                        navigateToUrl(previousUrl, false);
+                    }
+                });
 
                 // URL入力時のイベントリスナー (予測変換)
                 urlInput.addEventListener('input', () => {
@@ -1416,9 +1424,19 @@
                     colorPicker.value = '#ffffff';
                 });
                 
-                brushSizeInput.addEventListener('input', (e) => {
-                    currentSize = e.target.value;
+                // ブラシサイズを更新する関数
+                const updateBrushSize = (size) => {
+                    currentSize = size;
+                    ctx.lineWidth = currentSize;
                     brushSizeValueSpan.textContent = currentSize;
+                };
+                
+                // 初期サイズを設定
+                updateBrushSize(5);
+                
+                // スライダーのイベントリスナー
+                brushSizeInput.addEventListener('input', (e) => {
+                    updateBrushSize(parseInt(e.target.value));
                 });
                 
                 clearButton.addEventListener('click', clearCanvas);
