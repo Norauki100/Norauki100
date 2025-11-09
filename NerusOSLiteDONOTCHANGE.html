@@ -417,11 +417,6 @@
                     <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">📊</div>
                     <span class="text-xs text-white">Calculator</span>
                 </div>
-                <!-- アプリ6 -->
-                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('settings')">
-                    <div class="w-10 h-10 bg-gray-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">⚙️</div>
-                    <span class="text-xs text-white">設定</span>
-                </div>
             </div>
         </div>
 
@@ -742,11 +737,6 @@
                                             <div class="flex items-center space-x-2">
                                                 <label for="color-picker" class="font-medium whitespace-nowrap">ペンカラー:</label>
                                                 <input type="color" id="color-picker" value="#000000" class="w-12 h-12 rounded-lg border-2 border-gray-600 cursor-pointer">
-                                                <button id="eraser-button" class="p-2 bg-white text-gray-800 rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors duration-200" title="消しゴム">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
-                                                </button>
                                             </div>
                                         </div>
                                         <div class="flex items-center space-x-2">
@@ -1289,7 +1279,6 @@
                 const brushSizeInput = appWindow.querySelector('#brush-size');
                 const brushSizeValueSpan = appWindow.querySelector('#brush-size-value');
                 const clearButton = appWindow.querySelector('#clear-canvas');
-                const eraserButton = appWindow.querySelector('#eraser-button');
                 const ctx = canvas.getContext('2d');
                 
                 let isDrawing = false;
@@ -1394,26 +1383,8 @@
                 // ウィンドウリサイズ時にキャンバスサイズを調整
                 window.addEventListener('resize', resizeCanvas);
                 
-                // 描画色を更新する関数
-                const updateStrokeStyle = () => {
-                    ctx.strokeStyle = currentColor;
-                };
-                
                 colorPicker.addEventListener('change', (e) => {
                     currentColor = e.target.value;
-                    updateStrokeStyle();
-                    // 消しゴムボタンのスタイルをリセット
-                    eraserButton.classList.remove('bg-gray-300');
-                });
-                
-                // 消しゴムボタンの処理
-                eraserButton.addEventListener('click', () => {
-                    currentColor = '#ffffff';
-                    updateStrokeStyle();
-                    // 消しゴムボタンをアクティブな状態に
-                    eraserButton.classList.add('bg-gray-300');
-                    // カラーピッカーの表示も白に更新
-                    colorPicker.value = '#ffffff';
                 });
                 
                 brushSizeInput.addEventListener('input', (e) => {
