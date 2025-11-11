@@ -24,12 +24,14 @@
             height: 35px;
             display: flex;
             align-items: center;
+            margin-bottom: 10px; /* ナビゲーションバーとヘッダーの間隔 */
         }
         
         .nav-container {
             width: 100%;
-            margin: 0;
-            padding: 0 clamp(10px, 5vw, 80px);
+            max-width: 1400px;/*ナビゲーションの幅これ*/
+            margin: 0 auto;
+            padding: 0 20px;
             display: flex;
             justify-content: flex-start;
             align-items: center;
@@ -72,7 +74,7 @@
         .nav-logo {
             font-family: 'Roboto', sans-serif;
             font-weight: 400;
-            font-size: 14px;
+            font-size: 13px;
             color: #fff;
             text-decoration: none;
             display: flex;
@@ -104,7 +106,7 @@
             /*kore#fff*/
             text-decoration: none;
             font-family: 'Roboto', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 400;
             transition: all 0.3s;
             display: flex;
@@ -118,16 +120,16 @@
         }
         
         .header-container {
+            margin: 0;
             position: relative;
             width: 100%;
             max-width: 100%;
-            margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
         .content-container {
-            max-width: 1600px;
+            max-width: 1450px;
             margin: 0 auto;
             padding: 0 clamp(10px, 5vw, 80px);
             box-sizing: border-box;
@@ -138,11 +140,11 @@
             height: 150px;
             display: flex;
             justify-content: center;
+            margin: 0 0 3px 0; /* ヘッダーとコンテンツの間隔 */
             align-items: center;
             background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
             background-size: 200% 200%;
             animation: gradient 15s ease infinite;
-            margin-bottom: 20px;
             border-radius: 5px;
         }
         
@@ -171,10 +173,10 @@
         .main-content {
             background-color: #ffffff;
             min-height: 200px; /*1番のブロック*/
-            padding: 10px 0 30px; 
+            padding: 5px 0 15px; 
             color: #333333;
             border-radius: 5px;
-            margin-top: 20px; 
+            margin-top: 3px; 
         }
 
         .main-content h2 {
@@ -187,29 +189,28 @@
 
         .main-content p {
             font-size: 1.2em;
-            line-height: 1.6;
+            line-height: 1.5;
             text-align: center;
             max-width: 800px;
-            margin: 0 auto;
+            margin: 5px auto;
             white-space: pre-line;
         }
 
-        .second-block {
+        .second-block, .fourth-block {
             background-color: #f8f9fa;
-            min-height: 200px; /*2番のブロック*/
-            padding: 40px 0;
+            min-height: 120px; /*2番のブロック*/
+            padding: 15px 0;
             color: #333333;
             border-radius: 5px;
-            margin-top: 20px;
+            margin-top: 3px;
         }
         
         .block-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+            display: block;
+            width: 100%;
+            max-width: 1020px;
+            margin: 0;
+            padding: 0 10px;
         }
         
         .image-container {
@@ -224,8 +225,19 @@
         }
         
         .text-content {
-            flex: 1;
+            width: 100%;
             padding: 0 20px;
+            text-align: left;
+            box-sizing: border-box;
+        }
+        
+        .second-block .text-content,
+        .third-block .text-content,
+        .fourth-block .text-content {
+            padding: 0 20px;
+            margin: 0;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .second-block h2 {
@@ -236,21 +248,23 @@
             text-align: center;
         }
 
-        .second-block p {
+        .second-block p, .third-block p, .fourth-block p {
             font-size: 1.3em;
-            line-height: 1.7;
+            line-height: 1.5;
             text-align: left;
-            max-width: 800px;
-            margin: 10px 0;
+            max-width: none;
+            width: 1100;
+            margin: 5px 0;
+            white-space: pre-line;
         }
 
         .third-block {
             background-color: #ffffff;
             min-height: 200px;/*3番のブロック*/
-            padding: 40px 0;
+            padding: 15px 0;
             color: #333333;
             border-radius: 5px;
-            margin-top: 20px;
+            margin-top: 3px;
         }
 
         .third-block h2 {
@@ -261,38 +275,31 @@
             text-align: center;
         }
 
-        .third-block p {
-            font-size: 1.3em;
-            line-height: 1.7;
-            text-align: left;
-            max-width: 800px;
-            margin: 10px 0;
-        }
-
-        .fourth-block {
-            background-color: #f8f9fa;
-            min-height: 200px;/*4番のブロック*/
-            padding: 40px 0;
-            color: #333333;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-
         .fourth-block h2 {
             font-size: 1.8rem;
-            color: #2c3e50;
+            color: #2c3e50;/*4これ*/
             margin-bottom: 20px;
             font-weight: 600;
             text-align: center;
         }
+        
+        .section-title-bar {
+            background-color: #1a3a5f;
+            color: white;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            margin: 0 20px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            border-radius: 8px;
+        }
 
-        .fourth-block p {
-            font-size: 1.3em;
-            line-height: 1.7;
-            text-align: left;
-            max-width: 800px;
-            margin: 10px 0;
-            white-space: pre-line;
+        .second-block, .third-block, .fourth-block {
+            margin: 3px 0;
+            border-radius: 4px;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -302,11 +309,11 @@
             <div class="nav-container">
                 <a href="#" class="nav-logo">ホーム</a>
                 <ul class="nav-links">
-                    <li><a href="#">サイト1</a></li>
-                    <li><a href="#">WORKS</a></li>
-                    <li><a href="#">SERVICE</a></li>
-                    <li><a href="#">NEWS</a></li>
-                    <li><a href="#">CONTACT</a></li>
+                    <li><a href="#">製品へのリンク</a></li>
+                    <li><a href="#">製品一覧</a></li>
+                    <li><a href="#">会社について</a></li>
+                    <li><a href="#">北川鉄道について</a></li>
+                    <li><a href="#">スタジオ(Scratch)</a></li>
                 </ul>
             </div>
         </nav>
@@ -331,55 +338,81 @@ Discordも来てもいいすよ！<br>
                 </div>
             </div>
             <div class="second-block">
-                <h2>ニュース | 2025/11/04 更新 お知らせ</h2>
+                <div class="section-title-bar">ニュース</div>
                 <div class="block-content">
-                    <div class="text-content">
-                        <p style="white-space: pre-line; margin: 0;">
-                            Nerus OS Next 9リリースしたよ
-                            この画像は今githubで新サイト作ってる様子
-                            ワンちゃん移行できるかも！！
-                        </p>
+                    <div class="text-content" style="display: flex; align-items: flex-start; gap: 20px;">
+                        <div style="flex: 0 0 auto; max-width: 40%; margin-top: 10px;">
+                            <img src="1000_489.png" alt="Nerus OS Next 9のスクリーンショット" style="width: 100%; height: auto; max-height: 200px; object-fit: contain; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                        </div>
+                        <div>
+                            <p style="white-space: pre-line; margin: -20px 0 0 0; text-align: left; padding: 0; width: 100%; box-sizing: border-box;">
+                                Nerus OS Next 9リリースしたよ
+                                この画像は今githubで新サイト作ってる様子
+                                ワンちゃん移行できるかも！！
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <div class="third-block">
-                <h2>OSの一覧</h2>
+                <div class="section-title-bar">OSの一覧</div>
                 <div class="block-content">
                     <div class="text-content">
-                        <p style="white-space: pre-line; margin: 0;">
+                        <p style="white-space: pre-line; margin: -30px 0 0 0; text-align: left; padding: 0; width: 100%; box-sizing: border-box;">
                             Nerus OS Next 9 "Nocturne"
 現在Scratchにて公開中、Nerus Versionは9.0です。
-https://scratch.mit.edu/projects/1205475043/
+<a href="https://scratch.mit.edu/projects/1205475043/" target="_blank" rel="noopener noreferrer">https://scratch.mit.edu/projects/1205475043/</a>
 
 Nerus OS 8 Next -今までにない進化-
 現在Scratchにて公開中、Nerus Verisonは8.5です。
-https://scratch.mit.edu/projects/1207547049/
+<a href="https://scratch.mit.edu/projects/1207547049/" target="_blank" rel="noopener noreferrer">https://scratch.mit.edu/projects/1207547049/</a>
 
 Nerus OS 8 Next NO NEWTUBE版
 軽量化のためにNewTubeの機能を削除したOSです。
-https://scratch.mit.edu/projects/1165640663/
+<a href="https://scratch.mit.edu/projects/1165640663/" target="_blank" rel="noopener noreferrer">https://scratch.mit.edu/projects/1165640663/</a>
 
 Luna OS 11 画期的な「ホームバー」とともに。
 現在Scratchにて公開中です。
-https://scratch.mit.edu/projects/1181832857/
+<a href="https://scratch.mit.edu/projects/1181832857/" target="_blank" rel="noopener noreferrer">https://scratch.mit.edu/projects/1181832857/</a>
                         </p>
                     </div>
                 </div>
             </div>
             
             <div class="fourth-block">
-                <h2>お問い合わせ</h2>
+                <div class="section-title-bar" style="background-color: #1a3a5f;">OSの定期更新サポート</div>
                 <div class="block-content">
                     <div class="text-content">
-                        <p style="white-space: pre-line; margin: 0;">
-                            ご質問やご要望がございましたら、
-                            以下のメールアドレスまでお気軽にお問い合わせください。
-                            
-                            メールアドレス: info@yukitensoftwic.com
-                            
-                            営業時間: 24時間365日受付中
-                            お返事には最大48時間をいただく場合がございます。
+                        <p style="white-space: pre-line; margin: -30px 0 0 0; text-align: left; padding: 0; width: 100%; box-sizing: border-box;">
+                            サポート中のOSは定期更新があります。
+                            サポートが終了したOSであっても、ごく稀にアップデートが配信される場合があります。
+                        </p>
+                        <div class="section-title-bar" style="margin: 15px 20px 0 20px; height: 40px; font-size: 1.1rem; text-align: left; padding-left: 20px; background-color: #00d675;">定期更新中</div>
+                        <p style="margin: -30px 0 15px 0; line-height: 1.5; padding: 0 20px; white-space: pre-line; color: #00d675;">
+Nerus OS Next 9 v9.0
+Nerus OS 8 Next Ver8.4-Ver8.5
+Luna OS 11
+                        </p>
+                        <div class="section-title-bar" style="margin: 15px 20px 0 20px; height: 40px; font-size: 1.1rem; text-align: left; padding-left: 20px; background-color: #2f5f98;">定期更新終了</div>
+                        <p style="margin: -30px 0 0 0; line-height: 1.5; padding: 0 20px 20px 20px; white-space: pre-line; color: #2f5f98;">
+Nerus OS 8 Next (Ver8.0-8.3)
+Luna OS 10
+Nerus OS 7 (Ver7.0-7.3)
+Nerus OS 6 (Ver6.0-6.6)
+Nerus OS 5
+Nerus OS 4/Tablet Mobile Edition
+Nerus OS 3
+Nerus OS 2
+Nerus OS
+omg os N1/N1 Service Pack 1,2
+omg os 5/5 Plus
+omg os 4
+omg os 3
+omg os 2 Home/Pro
+omg os Pro
+omg os Server
+omg os
                         </p>
                     </div>
                 </div>
