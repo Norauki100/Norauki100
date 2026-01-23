@@ -10,3 +10,9 @@ crayon 2とかいう改悪デザインを生み出しやがったので
 
 脱CrayonということでAIと一緒に開発中です
 
+
+
+Yukitensoftwic Companyの新サイト
+
+https://norauki100.github.io/main/NerusCompany/nerus\_n8-home.html
+
